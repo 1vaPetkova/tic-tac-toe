@@ -78,10 +78,11 @@ function Board({ xTurn, squares, onPlay }) {
     }
   }
 
+
   return (
     <div>
       <div className='status'>{status}</div>
-      <div className='board-row'>
+      {/* <div className='board-row'>
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
         <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
@@ -95,9 +96,27 @@ function Board({ xTurn, squares, onPlay }) {
         <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
         <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
         <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+      </div> */}
+
+      <div>
+      <Matrix squares={squares} handleClick={handleClick}/>  
       </div>
     </div>
   )
+}
+
+var indices = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+function Matrix ({squares, handleClick}) {
+  return (
+    indices.map(row =>
+    <div className='board-row'>
+      {
+  row.map(col => 
+    <Square value={squares[col]} onSquareClick={() => handleClick(col)} />
+  )
+}
+  </div>
+  ))
 }
 
 
