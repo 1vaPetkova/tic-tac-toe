@@ -17,6 +17,7 @@ const winningCombinations = [
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  const [sortAsc, setSortOrder] = useState(true);
   const xTurn = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
@@ -29,11 +30,16 @@ export default function Game() {
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
   }
+  
+  function handleSort() {
+    setSortOrder(!sortAsc)
+  }
 
   const moves = history.map((squares, move) => {
     let description = move === 0 ? 'Go to the game start' : `Go to move ${move}`;
     if (move === currentMove) {
-      return (<li key={move}>
+      return (
+      <li key={move}>
         <div>You are at move {currentMove}</div>
       </li>
       );
@@ -44,14 +50,20 @@ export default function Game() {
       </li>
     );
   });
+  
+  const movesSorted = sortAsc ? moves : moves.reverse();
 
   return (
     <div className='game'>
       <div className='game-board'>
         <Board xTurn={xTurn} squares={currentSquares} onPlay={handlePlay} />
       </div>
+     
+      <div>
+        <button className='toggle-order' onClick={handleSort}>Sort order: {sortAsc ? 'Asc' : 'Desc'}</button>
+      </div>
       <div className='game-info'>
-        <ol>{moves}</ol>
+        <ul>{movesSorted}</ul>
       </div>
     </div>
   );
@@ -82,22 +94,6 @@ function Board({ xTurn, squares, onPlay }) {
   return (
     <div>
       <div className='status'>{status}</div>
-      {/* <div className='board-row'>
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </div>
-      <div className='board-row'>
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-      <div className='board-row'>
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </div> */}
-
       <div>
       <Matrix squares={squares} handleClick={handleClick}/>  
       </div>
@@ -106,17 +102,18 @@ function Board({ xTurn, squares, onPlay }) {
 }
 
 var indices = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+
 function Matrix ({squares, handleClick}) {
   return (
     indices.map(row =>
-    <div className='board-row'>
-      {
-  row.map(col => 
-    <Square value={squares[col]} onSquareClick={() => handleClick(col)} />
-  )
-}
-  </div>
-  ))
+      <div className='board-row'>
+        {
+          row.map(col => 
+            <Square value={squares[col]} onSquareClick={() => handleClick(col)} />
+          )
+        }
+      </div>
+    ));
 }
 
 
